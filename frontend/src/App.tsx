@@ -1,4 +1,4 @@
-import { Autocomplete, Container, TextField } from "@mui/material";
+import { Autocomplete, Button, Container, FormControl, FormControlLabel, FormLabel, TextField } from "@mui/material";
 import "./App.css";
 import { useMainOptions, useSubOptions } from "./services/queries";
 import { useState } from "react";
@@ -23,6 +23,15 @@ function App() {
     setMainSelected(value);
   };
 
+  const onSubOptionChange = (
+    _: React.SyntheticEvent<Element, Event>,
+    value: string | null
+  ) => {
+    if (value === null) {
+      return;
+    }
+    setSubSelected(value)
+  };
   const { data: subOptions, isFetched: isSubOptionsLoaded } =
     useSubOptions(mainSelected);
   if (mainOptionFetchError) {
@@ -34,14 +43,16 @@ function App() {
   console.log(isSubOptionsLoaded);
 
   return (
-    <Container sx={{display: "flex", width: "100%", flexDirection: "column", gap: "10px"}}>
+  <Container sx={{display: "flex", width: "75%", height: "80vh",flexDirection:  "column", justifyContent:"center"}}>
+    <FormControl sx={{display: "flex", flexDirection:"column", gap: "10px"}}>
+      <FormLabel sx={{color: "#222", fontSize: "1.5rem", fontWeight: "500"}}>Basic Form</FormLabel>
       <Autocomplete
         onChange={onMainOptionChange}
         options={mainOptions}
         //{...register("")}
         value={mainSelected}
         renderInput={(params) => (
-          <TextField {...params} value={params} label="main-option" />
+          <TextField {...params} value={params} label="Main option" />
         )}
         disabled={!isSubOptionsLoaded}
       ></Autocomplete>
@@ -51,12 +62,15 @@ function App() {
           loading={isSubOptionsLoaded}
           value={subSelected}
           options={subOptions}
+          onChange={onSubOptionChange}
           renderInput={(params) => (
-            <TextField {...params} value={params} label="sub-option" />
+            <TextField {...params} value={params} label="Sub option" />
           )}
         ></Autocomplete>
       )}
-    </Container>
+      <Button>Submit</Button>
+    </FormControl>
+  </Container>
   );
 }
 
