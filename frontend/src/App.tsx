@@ -1,58 +1,62 @@
-import { Autocomplete, TextField } from "@mui/material";
+import { Autocomplete, Container, TextField } from "@mui/material";
 import "./App.css";
 import { useMainOptions, useSubOptions } from "./services/queries";
 import { useState } from "react";
-import { useQueryClient } from "@tanstack/react-query";
 
 function App() {
-  const queryClient = useQueryClient();
   const {
     data: mainOptions,
     error: mainOptionFetchError,
     isPending,
   } = useMainOptions();
 
-  const [selected, setSelected] = useState("");
+  const [mainSelected, setMainSelected] = useState("");
+  const [subSelected, setSubSelected] = useState("")
   const onMainOptionChange = (
-    e: React.SyntheticEvent<Element, Event>,
+    _: React.SyntheticEvent<Element, Event>,
     value: string | null
   ) => {
     if (value === null) {
       return;
     }
-    setSelected(value);
-    //queryClient.invalidateQueries({ queryKey: ["sub-options"] });
+    setSubSelected("")
+    setMainSelected(value);
   };
 
-  let { data: subOptions, isPending: isSubOptionsPending } =
-    useSubOptions(selected);
+  const { data: subOptions, isFetched: isSubOptionsLoaded } =
+    useSubOptions(mainSelected);
   if (mainOptionFetchError) {
     return <>Error</>;
   }
   if (isPending) {
     return <>Loading</>;
   }
+  console.log(isSubOptionsLoaded);
 
   return (
-    <>
+    <Container sx={{display: "flex", width: "100%", flexDirection: "column", gap: "10px"}}>
       <Autocomplete
         onChange={onMainOptionChange}
         options={mainOptions}
+        //{...register("")}
+        value={mainSelected}
         renderInput={(params) => (
           <TextField {...params} value={params} label="main-option" />
         )}
-        disabled={isSubOptionsPending}
+        disabled={!isSubOptionsLoaded}
       ></Autocomplete>
       {subOptions && (
         <Autocomplete
-          disabled={selected === "" || isSubOptionsPending}
+          disabled={mainSelected === "" || !isSubOptionsLoaded}
+          loading={isSubOptionsLoaded}
+          value={subSelected}
           options={subOptions}
           renderInput={(params) => (
             <TextField {...params} value={params} label="sub-option" />
           )}
         ></Autocomplete>
       )}
-    </>
+    </Container>
   );
 }
 

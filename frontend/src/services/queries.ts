@@ -10,7 +10,7 @@ export function useMainOptions() {
 
 export function useSubOptions(item: string) {
     return useQuery({
-        queryKey: ["sub-options"],
+        queryKey: ["sub-options", item],
         queryFn: () => getSubOptions(item),
     })
 }
