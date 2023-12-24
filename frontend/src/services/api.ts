@@ -12,7 +12,6 @@ export const getMainOptions = async () => {
 }
 
 export const getSubOptions = async (item: string) => {
-    console.log(item)
     if (item === "") {
         return new Array<string>
     }
