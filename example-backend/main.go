@@ -45,13 +45,13 @@ func main() {
 	})
 	type SubmitRequest struct {
 		MainOptions string `json:"mainOptions"`
-		SubOptions  string `json:"subOptions`
+		SubOptions  string `json:"subOptions"`
 	}
 	e.POST("/submit", func(c echo.Context) error {
 		var submitRequest SubmitRequest
 		c.Bind(&submitRequest)
-		fmt.Printf(submitRequest.MainOptions)
-		fmt.Printf(submitRequest.SubOptions)
+		fmt.Println("Main Options : ", submitRequest.MainOptions)
+		fmt.Println("Sub Options : ", submitRequest.SubOptions)
 		return c.JSON(201, nil)
 	})
 	e.Start(":3001")
