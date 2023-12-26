@@ -67,14 +67,12 @@ function App() {
             const { onChange, value } = field;
             return (
               <Autocomplete
-                //onChange={onMainOptionChange}
                 options={mainOptions}
                 onChange={(_, newValue) => {
-                  setValue("subOptions", "")
-                  onChange(newValue)
+                  setValue("subOptions", "");
+                  onChange(newValue);
                 }}
                 value={value}
-                //value={mainSelected}
                 renderInput={(params) => (
                   <TextField {...params} value={params} label="Main option" />
                 )}
@@ -83,17 +81,27 @@ function App() {
             );
           }}
         ></Controller>
-        <Autocomplete
-          disabled={!isSubOptionsLoaded}
-          loading={isSubOptionsLoaded}
-          //value={subSelected}
-          options={subOptions ? subOptions : []}
-          //onChange={onSubOptionChange}
-          {...register("subOptions")}
-          renderInput={(params) => (
-            <TextField {...params} value={params} label="Sub option" />
-          )}
-        ></Autocomplete>
+        <Controller
+          name="subOptions"
+          control={control}
+          render={({ field }) => {
+            const { onChange, value } = field;
+            return (
+              <Autocomplete
+                disabled={!isSubOptionsLoaded}
+                loading={isSubOptionsLoaded}
+                value={value}
+                options={subOptions ? subOptions : []}
+                onChange={(_, newValue) => {
+                  onChange(newValue);
+                }}
+                renderInput={(params) => (
+                  <TextField {...params} value={params} label="Sub option" />
+                )}
+              ></Autocomplete>
+            );
+          }}
+        ></Controller>
         <Button>Submit</Button>
       </FormControl>
     </Container>
