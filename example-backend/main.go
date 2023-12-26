@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 )
@@ -32,7 +34,7 @@ func main() {
 		if subOptionsRequest.Selected == "1" {
 			options = []string{"1.1", "1.2", "1.3"}
 		} else if subOptionsRequest.Selected == "2" {
-			options = []string{"2.1", "2.2", "2.3"}
+			options = []string{"2.1", "2.2", "2.3", "2.4"}
 		} else if subOptionsRequest.Selected == "3" {
 			options = []string{"3.1", "3.2"}
 		}
@@ -40,6 +42,17 @@ func main() {
 			Options: options,
 		}
 		return c.JSON(200, &response)
+	})
+	type SubmitRequest struct {
+		MainOptions string `json:"mainOptions"`
+		SubOptions  string `json:"subOptions`
+	}
+	e.POST("/submit", func(c echo.Context) error {
+		var submitRequest SubmitRequest
+		c.Bind(&submitRequest)
+		fmt.Printf(submitRequest.MainOptions)
+		fmt.Printf(submitRequest.SubOptions)
+		return c.JSON(201, nil)
 	})
 	e.Start(":3001")
 }
