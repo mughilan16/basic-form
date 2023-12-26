@@ -1,6 +1,7 @@
 import {
   Autocomplete,
   Button,
+  CircularProgress,
   Container,
   FormControl,
   FormLabel,
@@ -33,12 +34,12 @@ function App() {
   const { data: subOptions, isFetched: isSubOptionsLoaded } = useSubOptions(
     watch("mainOptions"),
   );
-  const onSubmit: SubmitHandler<FormInputType> = (data) => submit(data)
+  const onSubmit: SubmitHandler<FormInputType> = (data) => submit(data);
   if (mainOptionFetchError) {
     return <>Error</>;
   }
   if (isPending) {
-    return <>Loading</>;
+    return <CircularProgress></CircularProgress>;
   }
 
   return (
@@ -64,8 +65,10 @@ function App() {
         <Controller
           name="mainOptions"
           control={control}
-          render={({ field }) => {
+          rules={{required: true}}
+          render={({ field, formState }) => {
             const { onChange, value } = field;
+            const { errors } = formState;
             return (
               <Autocomplete
                 options={mainOptions}
@@ -75,7 +78,7 @@ function App() {
                 }}
                 value={value ? value : ""}
                 renderInput={(params) => (
-                  <TextField {...params} value={params} label="Main option" />
+                  <TextField {...params} value={params} label="Main option" error={!!errors.mainOptions} />
                 )}
                 disabled={!isSubOptionsLoaded}
               ></Autocomplete>
@@ -85,11 +88,13 @@ function App() {
         <Controller
           name="subOptions"
           control={control}
-          render={({ field }) => {
+          rules={{required: true}}
+          render={({ field, formState }) => {
             const { onChange, value } = field;
+            const { errors } = formState;
             return (
               <Autocomplete
-              disabled={watch("mainOptions") === undefined}
+                disabled={watch("mainOptions") === undefined}
                 loading={isSubOptionsLoaded}
                 value={value ? value : ""}
                 options={subOptions ? subOptions : []}
@@ -97,13 +102,15 @@ function App() {
                   onChange(newValue);
                 }}
                 renderInput={(params) => (
-                  <TextField {...params} value={params} label="Sub option" />
+                  <TextField {...params} value={params} label="Sub option" error={!!errors.subOptions}  />
                 )}
               ></Autocomplete>
             );
           }}
         ></Controller>
-        <Button type="submit" onClick={handleSubmit(onSubmit)}>Submit</Button>
+        <Button type="submit" onClick={handleSubmit(onSubmit)}>
+          Submit
+        </Button>
       </FormControl>
     </Container>
   );
