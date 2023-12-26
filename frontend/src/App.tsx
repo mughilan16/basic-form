@@ -9,7 +9,7 @@ import {
 import "./App.css";
 import { useMainOptions, useSubOptions } from "./services/queries";
 import { useEffect } from "react";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, SubmitHandler, useForm } from "react-hook-form";
 
 function App() {
   const {
@@ -21,7 +21,7 @@ function App() {
     mainOptions: string;
     subOptions: string;
   };
-  const { register, formState, setValue, watch, control } =
+  const { formState, setValue, watch, control, handleSubmit } =
     useForm<FormInputType>();
   useEffect(() => {
     if (formState.touchedFields.mainOptions) {
@@ -32,6 +32,7 @@ function App() {
   const { data: subOptions, isFetched: isSubOptionsLoaded } = useSubOptions(
     watch("mainOptions"),
   );
+  const onSubmit: SubmitHandler<FormInputType> = (data) => console.log(data)
   console.log(watch("mainOptions"));
   if (mainOptionFetchError) {
     return <>Error</>;
@@ -90,7 +91,7 @@ function App() {
               <Autocomplete
                 disabled={!isSubOptionsLoaded}
                 loading={isSubOptionsLoaded}
-                value={value}
+                value={value ? value : ""}
                 options={subOptions ? subOptions : []}
                 onChange={(_, newValue) => {
                   onChange(newValue);
@@ -102,7 +103,7 @@ function App() {
             );
           }}
         ></Controller>
-        <Button>Submit</Button>
+        <Button type="submit" onClick={handleSubmit(onSubmit)}>Submit</Button>
       </FormControl>
     </Container>
   );
