@@ -10,6 +10,7 @@ import "./App.css";
 import { useMainOptions, useSubOptions } from "./services/queries";
 import { useEffect } from "react";
 import { Controller, SubmitHandler, useForm } from "react-hook-form";
+import { submit } from "./services/api";
 
 function App() {
   const {
@@ -32,8 +33,7 @@ function App() {
   const { data: subOptions, isFetched: isSubOptionsLoaded } = useSubOptions(
     watch("mainOptions"),
   );
-  const onSubmit: SubmitHandler<FormInputType> = (data) => console.log(data)
-  console.log(watch("mainOptions"));
+  const onSubmit: SubmitHandler<FormInputType> = (data) => submit(data)
   if (mainOptionFetchError) {
     return <>Error</>;
   }
@@ -73,7 +73,7 @@ function App() {
                   setValue("subOptions", "");
                   onChange(newValue);
                 }}
-                value={value}
+                value={value ? value : ""}
                 renderInput={(params) => (
                   <TextField {...params} value={params} label="Main option" />
                 )}
@@ -89,7 +89,7 @@ function App() {
             const { onChange, value } = field;
             return (
               <Autocomplete
-                disabled={!isSubOptionsLoaded}
+              disabled={watch("mainOptions") === undefined}
                 loading={isSubOptionsLoaded}
                 value={value ? value : ""}
                 options={subOptions ? subOptions : []}

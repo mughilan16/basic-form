@@ -7,6 +7,11 @@ type getOptionResponse = {
     options: Array<string>
 }
 
+type selectedOptions = {
+  mainOptions: string,
+  subOptions: string
+}
+
 export const getMainOptions = async () => {
     return (await axiosInstance.get<getOptionResponse>("/main-options")).data.options
 }
@@ -16,4 +21,8 @@ export const getSubOptions = async (item: string) => {
         return new Array<string>
     }
     return (await axiosInstance.post<getOptionResponse>("/sub-options", {selected: item})).data.options
+}
+
+export const submit = async (options: selectedOptions) => {
+  return (await axiosInstance.post("/submit", {options}))
 }
