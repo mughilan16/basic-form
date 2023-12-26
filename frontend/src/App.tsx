@@ -9,7 +9,7 @@ import {
 import "./App.css";
 import { useMainOptions, useSubOptions } from "./services/queries";
 import { useEffect } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 
 function App() {
   const {
@@ -18,19 +18,21 @@ function App() {
     isPending,
   } = useMainOptions();
   type FormInputType = {
-    mainOptions: string,
-    subOptions: string
-  }
-  const { register, formState, getValues, setValue } = useForm<FormInputType>()
+    mainOptions: string;
+    subOptions: string;
+  };
+  const { register, formState, setValue, watch, control } =
+    useForm<FormInputType>();
   useEffect(() => {
     if (formState.touchedFields.mainOptions) {
-      setValue("subOptions", "")
+      setValue("subOptions", "");
     }
-  }, [formState, setValue])
+  }, [formState, setValue]);
 
-  const { data: subOptions, isFetched: isSubOptionsLoaded } =
-    useSubOptions(getValues("mainOptions"));
-  console.log(getValues("mainOptions"))
+  const { data: subOptions, isFetched: isSubOptionsLoaded } = useSubOptions(
+    watch("mainOptions"),
+  );
+  console.log(watch("mainOptions"));
   if (mainOptionFetchError) {
     return <>Error</>;
   }
@@ -58,16 +60,29 @@ function App() {
         <FormLabel sx={{ fontSize: "1.5rem", fontWeight: "500" }}>
           Basic Form
         </FormLabel>
-        <Autocomplete
-          //onChange={onMainOptionChange}
-          options={mainOptions}
-          //value={mainSelected}
-          {...register("mainOptions")}
-          renderInput={(params) => (
-            <TextField {...params} value={params} label="Main option" />
-          )}
-          disabled={!isSubOptionsLoaded}
-        ></Autocomplete>
+        <Controller
+          name="mainOptions"
+          control={control}
+          render={({ field }) => {
+            const { onChange, value } = field;
+            return (
+              <Autocomplete
+                //onChange={onMainOptionChange}
+                options={mainOptions}
+                onChange={(_, newValue) => {
+                  setValue("subOptions", "")
+                  onChange(newValue)
+                }}
+                value={value}
+                //value={mainSelected}
+                renderInput={(params) => (
+                  <TextField {...params} value={params} label="Main option" />
+                )}
+                disabled={!isSubOptionsLoaded}
+              ></Autocomplete>
+            );
+          }}
+        ></Controller>
         <Autocomplete
           disabled={!isSubOptionsLoaded}
           loading={isSubOptionsLoaded}
