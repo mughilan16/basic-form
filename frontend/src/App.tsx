@@ -65,7 +65,7 @@ function App() {
         <Controller
           name="mainOptions"
           control={control}
-          rules={{required: true}}
+          rules={{ required: true }}
           render={({ field, formState }) => {
             const { onChange, value } = field;
             const { errors } = formState;
@@ -78,7 +78,12 @@ function App() {
                 }}
                 value={value ? value : ""}
                 renderInput={(params) => (
-                  <TextField {...params} value={params} label="Main option" error={!!errors.mainOptions} />
+                  <TextField
+                    {...params}
+                    value={params}
+                    label="Main option"
+                    error={!!errors.mainOptions}
+                  />
                 )}
                 disabled={!isSubOptionsLoaded}
               ></Autocomplete>
@@ -88,7 +93,7 @@ function App() {
         <Controller
           name="subOptions"
           control={control}
-          rules={{required: true}}
+          rules={{ required: true }}
           render={({ field, formState }) => {
             const { onChange, value } = field;
             const { errors } = formState;
@@ -102,7 +107,12 @@ function App() {
                   onChange(newValue);
                 }}
                 renderInput={(params) => (
-                  <TextField {...params} value={params} label="Sub option" error={!!errors.subOptions}  />
+                  <TextField
+                    {...params}
+                    value={params}
+                    label="Sub option"
+                    error={!!errors.subOptions}
+                  />
                 )}
               ></Autocomplete>
             );

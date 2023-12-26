@@ -24,5 +24,5 @@ export const getSubOptions = async (item: string) => {
 }
 
 export const submit = async (options: selectedOptions) => {
-  return (await axiosInstance.post("/submit", {options}))
+  return (await axiosInstance.post("/submit", options))
 }
